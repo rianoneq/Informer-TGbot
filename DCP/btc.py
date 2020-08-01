@@ -1,5 +1,5 @@
 from selenium import webdriver
-from datetime import datetime, date, time
+from datetime import *
 
 options = webdriver.ChromeOptions()
 options.add_argument('headless')
@@ -8,18 +8,21 @@ today = datetime.today()
 
 # start chrome browser
 browser = webdriver.Chrome(
-    executable_path='C:\\Users\\user1\\Desktop\\myScripts\\Python Scripts\\TelegaBot\\DCP\\chromedriver.exe', chrome_options=options)
+    executable_path='C:\\Users\\user1\\Desktop\\myScripts\\Python Scripts\\TelegaBot\\DCP\\chromedriver.exe', options=options)
 
 browser.get('https://ru.tradingview.com/symbols/BTCUSD/')
-value = browser.find_element_by_class_name(
+
+#block where info about btc course(value and change)
+BTCcurrency = browser.find_element_by_class_name(
+    'js-last-price-block-value-row')
+
+value = BTCcurrency.find_element_by_class_name(
     'tv-symbol-price-quote__value').text
 
-""" print(value + str(' долларов стоит 1 btc на ' + str(today))) """
+change = BTCcurrency.find_element_by_class_name(
+    'js-symbol-change-direction').text
 
-#Wrong change info, i'll try to fix it 
-""" change = browser.find_element_by_class_name(
-    'js-symbol-change-direction')
+print(value, 'долларов стоит 1 btc а также имеет такие',  change, str('изменения в стоимости'), 'на', str(today))
 
-print(change.text + str(' изменения в стоимости')) """
 
 browser.quit()

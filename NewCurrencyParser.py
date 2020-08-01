@@ -1,5 +1,6 @@
 from requests import get
 from bs4 import BeautifulSoup
+
 #DOLLAR
 dollar_url = 'https://quote.rbc.ru/ticker/59111'
 
