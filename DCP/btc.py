@@ -21,9 +21,11 @@ def main(webdriver, datetime):
     BTCcurrency = browser.find_element_by_class_name(
         'js-last-price-block-value-row')
 
-    global value = BTCcurrency.find_element_by_class_name(
+    global value
+    value = BTCcurrency.find_element_by_class_name(
         'tv-symbol-price-quote__value').text
 
+    global change
     change = BTCcurrency.find_element_by_class_name(
         'js-symbol-change-direction').text
 

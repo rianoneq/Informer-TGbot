@@ -5,7 +5,7 @@ from telebot import types
 from covid1 import country, russia, new_cases, new_deaths, total_deaths, confirmed
 from NewCurrencyParser import dollar, dollarNAME, dollarVALUE, dollarSTOCKS
 from NewCurrencyParser import euro, euroNAME, euroVALUE, euroSTOCKS
-from DCP.btc import main
+from DCP.btc import *
 
 today = datetime.today()
 
