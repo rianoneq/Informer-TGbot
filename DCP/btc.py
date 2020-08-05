@@ -1,9 +1,9 @@
 from selenium import webdriver
 from datetime import datetime
-import time
 
 
 def main(webdriver, datetime):
+    global today
     today = datetime.today()
 
 
@@ -29,7 +29,7 @@ def main(webdriver, datetime):
     change = BTCcurrency.find_element_by_class_name(
         'js-symbol-change-direction').text
 
-    print(value, 'долларов стоит 1 btc а также имеет такие',  change, str('изменения в стоимости'), 'на', str(today))
+    #print(value, 'долларов стоит 1 btc а также имеет такие',  change, str('изменения в стоимости'), 'на', str(today))
 
 
     browser.quit()
