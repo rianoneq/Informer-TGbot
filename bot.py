@@ -1,10 +1,13 @@
 import telebot
+from datetime import *
 from config import token
 from telebot import types
 from covid1 import country, russia, new_cases, new_deaths, total_deaths, confirmed
 from NewCurrencyParser import dollar, dollarNAME, dollarVALUE, dollarSTOCKS
 from NewCurrencyParser import euro, euroNAME, euroVALUE, euroSTOCKS
-from DCP.btc import BTCcurrency, value, change, today 
+from DCP.btc import main
+
+today = datetime.today()
 
 # bot initialization
 bot = telebot.TeleBot(token)
@@ -31,8 +34,8 @@ def welcomeAndKeyboard(message):
 
 #inline keyboard
 @bot.callback_query_handler(func=lambda call: True)
-def inlineKeyboard(call):
-  
+def inlineKeyboard(call):   
+    
     if call.message:
         if call.data == 'DOLLAR':
             bot.send_message(call.message.chat.id, dollarNAME.strip() +
@@ -44,8 +47,7 @@ def inlineKeyboard(call):
                              str('\nИзменение курса:  ') + euroSTOCKS.strip())
         elif call.data == 'BTC':
             bot.send_message(call.message.chat.id, value +' долларов стоит 1 btc а также имеет такие ' + change + 
-            str(' изменения в стоимости ') +
-            'на ' + str(today))
+                             str(' изменения в стоимости ') + 'на ' + str(today))
   
 
 #main scrtpt 
