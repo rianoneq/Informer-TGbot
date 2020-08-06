@@ -1,53 +1,60 @@
+import time
 from requests import get
 from bs4 import BeautifulSoup
+from datetime import datetime
+
 
 #DOLLAR
-dollar_url = 'https://quote.rbc.ru/ticker/59111'
+def DOLLAR(BeautifulSoup, get):
 
-# return full page content
-response = get(dollar_url)
+  today = datetime.today()
 
-#variable content
-soup = BeautifulSoup(response.text, 'html.parser')
+  dollar_url = 'https://quote.rbc.ru/ticker/59111'
 
-#return needed div
-div = soup.find("div", {"class" : "chart"})
+  response = get(dollar_url)
 
-#return needed content
-dollar_currency = div.find("div", {"class" : "chart__info"})
+  soup = BeautifulSoup(response.text, 'html.parser')
 
-dollarNAME = dollar_currency.find("span",  {"class" : "chart__info__name"}).text
+  div = soup.find("div", {"class" : "chart"})
 
-dollarVALUE = dollar_currency.find("span", {"class" : "chart__info__sum"}).text
+  dollar_currency = div.find("div", {"class" : "chart__info"})
 
-dollarSTOCKS  = dollar_currency.find("span", {"class" : "chart__info__change chart__change"}).text
+  global dollarNAME
+  dollarNAME = dollar_currency.find("span",  {"class" : "chart__info__name"}).text
 
-dollar = (dollarNAME, dollarVALUE, dollarSTOCKS)
+  global dollarVALUE
+  dollarVALUE = dollar_currency.find("span", {"class" : "chart__info__sum"}).text
+
+  global dollarSTOCKS
+  dollarSTOCKS  = dollar_currency.find("span", {"class" : "chart__info__change chart__change"}).text
+
+  #print(dollarNAME.strip(), dollarVALUE.strip(), dollarSTOCKS.strip(), today)
+
 
 #EURO
-euro_url = 'https://quote.rbc.ru/ticker/72383'
+def EURO(BeautifulSoup, get):  
+  today = datetime.today()
 
-# return full page content
-response = get(euro_url)  
+  euro_url = 'https://quote.rbc.ru/ticker/72383'
 
-#variable content
-soup = BeautifulSoup(response.text, 'html.parser')
+  response = get(euro_url)  
 
-#return needed div
-div = soup.find("div", {"class" : "chart"})
+  soup = BeautifulSoup(response.text, 'html.parser')
 
-# return needed content
-euro_currency = div.find("div", {"class": "chart__info"})
+  div = soup.find("div", {"class" : "chart"})
 
-euroNAME = euro_currency.find("span",  {"class": "chart__info__name"}).text
+  euro_currency = div.find("div", {"class": "chart__info"})
 
-euroVALUE = euro_currency.find("span", {"class": "chart__info__sum"}).text
+  global euroNAME
+  euroNAME = euro_currency.find("span",  {"class": "chart__info__name"}).text
 
-euroSTOCKS  = euro_currency.find("span", {"class" : "chart__info__change chart__change"}).text
+  global euroVALUE
+  euroVALUE = euro_currency.find("span", {"class": "chart__info__sum"}).text
 
-euro = euroNAME, euroVALUE, euroSTOCKS
+  global euroSTOCKS
+  euroSTOCKS  = euro_currency.find("span", {"class" : "chart__info__change chart__change"}).text
 
-#print(dollarNAME.strip(), dollarVALUE.strip(), dollarSTOCKS.strip())
-#print(euroNAME.strip(), euroVALUE.strip(), euroSTOCKS.strip())
+  #print(euroNAME.strip(), euroVALUE.strip(), euroSTOCKS.strip(), today)
 
-
+DOLLAR(BeautifulSoup, get)
+EURO(BeautifulSoup, get)

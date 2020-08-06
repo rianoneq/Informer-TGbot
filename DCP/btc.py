@@ -1,14 +1,14 @@
 from selenium import webdriver
 from datetime import datetime
 
-
 def main(webdriver, datetime):
     global today
     today = datetime.today()
 
-
+    #the first argument prevents the browser opening, the second removes the trash in the console
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
+    options.add_argument('--log-level=3')
 
     
     # start chrome browser
