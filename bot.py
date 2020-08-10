@@ -3,8 +3,6 @@ import time
 from config import token
 from telebot import types
 from covid1 import country, russia, new_cases, new_deaths, total_deaths, confirmed
-from NewCurrencyParser import dollarNAME, dollarVALUE, dollarSTOCKS
-from NewCurrencyParser import euroNAME, euroVALUE, euroSTOCKS
 from DCP.btc import value, change, today
 
 
