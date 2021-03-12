@@ -1,6 +1,7 @@
 import telebot
 import time
 import threading
+#import webdriver_manager
 import random
 from config import token
 from telebot import types
@@ -9,40 +10,8 @@ from requests import get
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from covid import Covid
+#from webdriver_manager.chrome import ChromeDriverManager
 
-#covid parser
-def covid(Covid, datetime):
-    while True:
-        today = datetime.today()
-
-        covid = Covid(source="worldometers")
-
-        covid.get_data()
-
-        countries = covid.list_countries()
-        
-        global russia
-        russia = covid.get_status_by_country_name("Russia")
-
-        global country
-        country = russia['country']
-
-        global confirmed
-        confirmed = russia['confirmed']
-
-        global new_cases
-        new_cases = russia['new_cases']
-
-        global new_deaths
-        new_deaths = russia['new_deaths']
-
-        global  total_deaths 
-        total_deaths = russia['deaths']
-
-        time.sleep(60)
-        #print('HAHAHAHAHAHAHAHAHH')
-
-#time.sleep(60*20)
 
 #DOLLAR
 def DOLLAR(get, BeautifulSoup):
@@ -97,21 +66,25 @@ def EURO(get, BeautifulSoup):
         #print('еuro', euroVALUE.strip(), euroSTOCKS.strip(), today)
         time.sleep(10)  
 
+
 #bitcoin
 def btc(webdriver, datetime):
     while True:
+
         global today
         today = datetime.today()
 
-        #the first argument prevents the browser opening, the second removes the trash in the console
+        #the first argument prevents the browser opening, the second removes trash in the console
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
         options.add_argument('--log-level=3')
 
-        
+
+        #driver = webdriver.Chrome(ChromeDriverManager().install(), executable_path=r'DCP\chromedriver.exe', options=options)
         # start chrome browser
         browser = webdriver.Chrome(
-            executable_path='C:\\Users\\user1\\Desktop\\myScripts\\Python Scripts\\TelegaBot\\DCP\\chromedriver.exe', options=options)
+            #executable_path=r'C:\Users\user1\Desktop\myScripts\Python Scripts\TelegaBots\TelebotScripts\TelebotScript\DCP\chromedriver.exe', options=options)
+            executable_path=r'DCP\chromedriver.exe', options=options)
 
         browser.get('https://ru.tradingview.com/symbols/BTCUSD/')
 
@@ -127,20 +100,62 @@ def btc(webdriver, datetime):
         btcCHANGE = BTCcurrency.find_element_by_class_name(
             'js-symbol-change-direction').text
 
-        #print(btcVALUE, 'долларов стоит 1 btc а также имеет такие',  btcCHANGE, str('изменения в стоимости'), 'на', str(today))
+        #print(btcVALUE, 'долларов стоит 1 btc а также имеет такие',  btcCHANGE, 'изменения в стоимости', 'на', today)
         time.sleep(5)
 
 
-#multiпоточность и парсеры тут, ущербно зато робит
-d = threading.Thread(target=DOLLAR, args=(get, BeautifulSoup), daemon=True)
-e = threading.Thread(target=EURO, args=(get, BeautifulSoup), daemon=True)  
-btc = threading.Thread(target=btc, args=(webdriver, datetime), daemon=True)  
-covid = threading.Thread(target=covid, args=(Covid, datetime), daemon=True)  
- 
-d.start()
-e.start()
-btc.start()
-covid.start()
+#covid parser
+def covid(Covid, datetime):
+    while True:
+
+        today = datetime.today()
+
+        covid = Covid(source="worldometers")
+
+        covid.get_data()
+
+        countries = covid.list_countries()
+
+        global russia
+        russia = covid.get_status_by_country_name("Russia")
+
+        global country
+        country = russia['country']
+
+        global confirmed
+        confirmed = russia['confirmed']
+
+        global new_cases
+        new_cases = russia['new_cases']
+
+        global new_deaths
+        new_deaths = russia['new_deaths']
+
+        global total_deaths
+        total_deaths = russia['deaths']
+
+        #print('Информация о коронке на ', today,
+              #'\nСтрана: ', country, 
+                  #'\nВсего подтвержденно случаев: ', confirmed, 
+                  #'\nВсего смертей: ', total_deaths, 
+                  #'\nСегодняшние заражения: ', new_cases, 
+                  #'\nСегодняшние смерти: ', new_deaths)
+        time.sleep(10)
+        #time.sleep(60*20)
+
+
+def MultithreadingParsers(threading, DOLLAR, EURO, btc, covid):
+
+    #multiпоточность и парсеры тут, ущербно зато робит
+    d = threading.Thread(target=DOLLAR, args=(get, BeautifulSoup), daemon=True)
+    e = threading.Thread(target=EURO, args=(get, BeautifulSoup), daemon=True)  
+    btc = threading.Thread(target=btc, args=(webdriver, datetime), daemon=True)  
+    covid = threading.Thread(target=covid, args=(Covid, datetime), daemon=True)  
+        
+    d.start()
+    e.start()
+    btc.start()
+    covid.start()
 
 
 # bot initialization
@@ -149,7 +164,6 @@ bot = telebot.TeleBot(token)
 #main keyboard(visiable all the time)
 @bot.message_handler(commands=['s', 'start'])
 def welcomeAndKeyboard(message):
-
     # welcome message
     img = open('media\lambert.webp', 'rb')
 
@@ -184,7 +198,8 @@ def inlineKeyboard(call):
         elif call.data == 'BTC':
             bot.send_message(call.message.chat.id, btcVALUE +' долларов стоит 1 btc а также имеет такие ' + btcCHANGE + 
                              str(' изменения в стоимости ') + 'на ' + str(today))
-    
+
+
 #russian rullete(why not?)
 def rullete(random):
 
@@ -197,7 +212,7 @@ def rullete(random):
 
 #main scrtpt 
 @bot.message_handler(content_types=['text'])
-def conversation(message):
+def main(message):
     
     if message.chat.type == 'private':
         if message.text == 'CURRENCIES':
@@ -256,7 +271,11 @@ def conversation(message):
             bot.send_video(message.chat.id, bye)
 
 
-
 # Bot run
 if __name__ == '__main__':
-    bot.polling(none_stop=True)
+    try:
+        MultithreadingParsers(threading, DOLLAR, EURO, btc, covid)
+        bot.polling(none_stop=True)
+    except NameError as e:
+        MultithreadingParsers(threading, DOLLAR, EURO, btc, covid)
+        bot.polling(none_stop=True)
